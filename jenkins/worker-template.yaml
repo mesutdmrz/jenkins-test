@@ -6,7 +6,7 @@ metadata:
 spec:
   containers:
   - name: docker
-    image: docker:24-dind
+    image: mesut4730/customjenkinsagent:v1
     securityContext:
       privileged: true
     command:

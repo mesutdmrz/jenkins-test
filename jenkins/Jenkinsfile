@@ -1,0 +1,82 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: jenkins-agent-dind
+  labels:
+    jenkins: agent
+  # ^ Jenkins Kubernetes plugin will match on this label by default
+spec:
+  serviceAccountName: jenkins
+  restartPolicy: Never
+  # ---- Volumes shared between the agent and the DinD sidecar ----
+  volumes:
+    - name: dind-storage               # Docker graph storage for DinD
+      emptyDir: {}
+    - name: docker-sock-tmp            # Optional: tmpfs for faster builds
+      emptyDir:
+        medium: Memory
+    # - name: docker-config            # Optional: registry auth (uncomment + mount below)
+    #   secret:
+    #     secretName: docker-config-json  # must contain key ".dockerconfigjson"
+    #     items:
+    #       - key: .dockerconfigjson
+    #         path: config.json
+
+  # ---- Containers ----
+  containers:
+    # Jenkins inbound agent (JNLP) — where your pipeline steps run
+    - name: jnlp
+      image: jenkins/inbound-agent:latest
+      imagePullPolicy: IfNotPresent
+      args:
+        - "$(JENKINS_SECRET)"
+        - "$(JENKINS_NAME)"
+      env:
+        # Make docker CLI talk to the DinD daemon in the sidecar
+        - name: DOCKER_HOST
+          value: tcp://localhost:2375
+        # Optional: speed up docker builds
+        - name: DOCKER_BUILDKIT
+          value: "1"
+      volumeMounts:
+        - name: docker-sock-tmp
+          mountPath: /tmp
+        # - name: docker-config        # uncomment if you mounted a registry secret above
+        #   mountPath: /home/jenkins/.docker
+        #   readOnly: true
+      resources:
+        requests:
+          cpu: "500m"
+          memory: "1Gi"
+        limits:
+          cpu: "2"
+          memory: "4Gi"
+
+    # DinD sidecar — runs dockerd inside the pod
+    - name: docker
+      image: docker:24-dind
+      imagePullPolicy: IfNotPresent
+      # Privileged is required for DinD
+      securityContext:
+        privileged: true
+      args:
+        # Expose dockerd on 2375 (plain TCP). For stronger security, use TLS (see notes below).
+        - "--host=tcp://0.0.0.0:2375"
+        - "--host=unix:///var/run/docker.sock"
+        - "--storage-driver=overlay2"
+      env:
+        # Reduce flakiness in small clusters
+        - name: DOCKER_TLS_CERTDIR
+          value: ""
+      volumeMounts:
+        - name: dind-storage
+          mountPath: /var/lib/docker
+        - name: docker-sock-tmp
+          mountPath: /var/run
+      resources:
+        requests:
+          cpu: "500m"
+          memory: "1Gi"
+        limits:
+          cpu: "2"
+          memory: "4Gi"
