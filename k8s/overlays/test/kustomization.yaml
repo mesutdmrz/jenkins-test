@@ -1,7 +1,9 @@
 namespace: pod-watcher-test
 resources:
-  - ../../base
+- ../../base
 namePrefix: pod-watcher-test-
-patchesStrategicMerge:
-  - clusterrolebinding-patch.yaml
-  - deployment-patch.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+patches:
+- path: clusterrolebinding-patch.yaml
+- path: deployment-patch.yaml

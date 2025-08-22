@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
         - name: pod-watcher
-          image: mesut4730/go:v8
+          image: mesut4730/pod-watcher:v2
           imagePullPolicy: Always
           resources:
             requests:
