@@ -43,7 +43,7 @@ func main() {
             }
 
             if pod.Labels["job-name"] != "" {
-                log.Printf("🚀 Jenkins job pod started: %s/%s (job: %s)", pod.Namespace, pod.Name, pod.Labels["job-name"])
+                log.Printf("Jenkins job pod started: %s/%s (job: %s)", pod.Namespace, pod.Name, pod.Labels["job-name"])
             }
         },
         UpdateFunc: func(oldObj, newObj interface{}) {
@@ -51,12 +51,12 @@ func main() {
             newPod := newObj.(*v1.Pod)
 
             if oldPod.Status.Phase != newPod.Status.Phase {
-                log.Printf("🔄 Pod updated: %s/%s, phase: %s -> %s", newPod.Namespace, newPod.Name, oldPod.Status.Phase, newPod.Status.Phase)
+                log.Printf("Pod updated: %s/%s, phase: %s -> %s", newPod.Namespace, newPod.Name, oldPod.Status.Phase, newPod.Status.Phase)
             }
         },
         DeleteFunc: func(obj interface{}) {
             pod := obj.(*v1.Pod)
-            log.Printf("❌ Pod deleted: %s/%s", pod.Namespace, pod.Name)
+            log.Printf("Pod deleted: %s/%s", pod.Namespace, pod.Name)
         },
     })
 
