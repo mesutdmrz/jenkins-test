@@ -1,0 +1,9 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pod-watcher-clusterrolebinding
+  namespace: pod-watcher-prod
+subjects:
+  - kind: ServiceAccount
+    name: pod-watcher-sa
+    namespace: pod-watcher-prod

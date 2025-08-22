@@ -1,0 +1,6 @@
+namespace: pod-watcher-test
+resources:
+  - ../../base
+namePrefix: pod-watcher-test-
+patchesStrategicMerge:
+  - clusterrolebinding-patch.yaml

@@ -1,0 +1,16 @@
+controller:
+  admin:
+    password: Cloud4730!
+    user: admin
+  image:
+    pullPolicy: Always
+    repository: jenkins/jenkins
+    tag: lts
+  installPlugins:
+  - kubernetes
+  - workflow-aggregator
+  - git
+  - docker-workflow
+  - configuration-as-code
+  - credentials-binding
+  serviceType: ClusterIP

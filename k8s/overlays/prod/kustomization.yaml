@@ -1,0 +1,6 @@
+namespace: pod-watcher-prod
+resources:
+  - ../../base
+namePrefix: pod-watcher-prod-
+patchesStrategicMerge:
+  - clusterrolebinding-patch.yaml

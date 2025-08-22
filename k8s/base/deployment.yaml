@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pod-watcher
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pod-watcher
+  template:
+    metadata:
+      labels:
+        app: pod-watcher
+    spec:
+      serviceAccountName: pod-watcher-sa
+      containers:
+        - name: pod-watcher
+          image: mesut4730/go:v9
+          imagePullPolicy: Always
+          args: ["-v"] # jenkins namespace'i izle
