@@ -4,3 +4,4 @@ resources:
 namePrefix: pod-watcher-prod-
 patchesStrategicMerge:
   - clusterrolebinding-patch.yaml
+  - deployment-patch.yaml

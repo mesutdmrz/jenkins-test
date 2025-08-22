@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pod-watcher
+spec:
+  template:
+    spec:
+      containers:
+        - name: pod-watcher
+          image: mesut4730/go:v9
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "512Mi"
+            limits:
+              cpu: "1"
+              memory: "1Gi"
