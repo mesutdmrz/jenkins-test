@@ -20,6 +20,20 @@ pipeline {
         DOCKER_PASS = credentials('DOCKER_PASS')
     }
     stages {
+        stage('Prepare Workspace & Update Branch') {
+            steps {
+                container('docker') {
+                    script {
+                        sh 'git config user.name "${GIT_USER}"'
+                        sh 'git config user.email "${GIT_EMAIL}"'
+                        sh 'git reset --hard'
+                        sh 'git clean -fd'
+                        sh "git fetch origin ${params.TARGET_BRANCH}"
+                        sh "git checkout -B ${params.TARGET_BRANCH} origin/${params.TARGET_BRANCH}"
+                    }
+                }
+            }
+        }
         stage('Deploy with Makefile') {
             steps {
                 container('docker') {
@@ -29,28 +43,22 @@ pipeline {
                         echo "$KUBECONFIG_CONTENT" | base64 -d > /tmp/kube/config
                         export KUBECONFIG=/tmp/kube/config
                         '''
-                        withCredentials([string(credentialsId: 'git-token', variable: 'GIT_TOKEN')]) {
-                            sh """
-                            cd ${WORKSPACE} 
-                            git config user.name "${GIT_USER}"
-                            git config user.email "${GIT_EMAIL}"
-                            git fetch origin ${params.TARGET_BRANCH}
-                            git reset --hard origin/${params.TARGET_BRANCH}
-                            git config --global --add safe.directory ${env.WORKSPACE}
-                            """
-                        }
                         
-                        // Parametreye göre ENV seçimi
+                        // ENV
                         def envValue = params.TARGET_BRANCH == 'main' ? 'prod' : 'test'
                         echo "Selected ENV: ${envValue}"
                         sh "kubectl get pods"
                         sh "ls"
+                        
+                        // Docker login / deploy
                         sh """
                         echo "${env.DOCKER_PASS}" | docker login -u "${env.DOCKER_USER}" --password-stdin
                         cd app
                         ls
                         make deploy ENV=${envValue}
                         """
+                        
+                        // Kustomization push
                         withCredentials([string(credentialsId: 'git-token', variable: 'GIT_TOKEN')]) {
                             sh """
                             git add k8s/overlays/${envValue}/kustomization.yaml
