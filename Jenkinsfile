@@ -35,6 +35,7 @@ pipeline {
                         sh "ls"
                         sh 'git config --global --add safe.directory $WORKSPACE'
                         sh 'cd app'
+                        sh 'ls'
                         sh "make deploy ENV=${envValue}"
                         
                         withCredentials([string(credentialsId: 'git-token', variable: 'GIT_TOKEN')]) {
