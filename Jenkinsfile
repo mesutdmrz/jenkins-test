@@ -34,6 +34,7 @@ pipeline {
                         sh "kubectl get pods"
                         sh "ls"
                         sh 'git config --global --add safe.directory $WORKSPACE'
+                        sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
                         sh """
                         cd app
                         ls
