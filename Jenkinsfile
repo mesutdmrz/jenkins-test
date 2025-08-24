@@ -16,6 +16,8 @@ pipeline {
         KUBECONFIG_CONTENT = credentials('jenkins-kubeconfig-base64')
         GIT_USER = 'mesutdmrz'
         GIT_EMAIL = 'mesutdmrz@gmail.com'
+        DOCKER_USER = credentials('DOCKER_USER')
+        DOCKER_PASS = credentials('DOCKER_PASS')
     }
     stages {
         stage('Deploy with Makefile') {
@@ -34,8 +36,8 @@ pipeline {
                         sh "kubectl get pods"
                         sh "ls"
                         sh 'git config --global --add safe.directory $WORKSPACE'
-                        sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
                         sh """
+                        echo "${env.DOCKER_PASS}" | docker login -u "${env.DOCKER_USER}" --password-stdin
                         cd app
                         ls
                         make deploy ENV=${envValue}
