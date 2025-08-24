@@ -31,8 +31,9 @@ pipeline {
                         // Parametreye göre ENV seçimi
                         def envValue = params.TARGET_BRANCH == 'main' ? 'prod' : 'test'
                         echo "Selected ENV: ${envValue}"
-                        
-                        sh "make -f /app/Makefile deploy ENV=${envValue}"
+                        sh "kubectl get pods"
+                        sh "pwd"
+                        sh "make -f app/Makefile deploy ENV=${envValue}"
                         
                         withCredentials([string(credentialsId: 'git-token', variable: 'GIT_TOKEN')]) {
                             sh """
