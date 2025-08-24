@@ -15,18 +15,18 @@ This guide will walk you through installing Jenkins on a Kubernetes cluster usin
 ```bash
 helm repo add jenkins https://charts.jenkins.io
 helm repo update
-
+```
 ## Step 2: Create a custom values.yaml
 
 ## Step 3: Install Jenkins using Helm
 
 ```bash
 helm install jenkins jenkins/jenkins -f values.yaml --namespace jenkins --create-namespace
-
+```
 ## Step 4: Verify the installation
 ```bash
 kubectl get pods -n jenkins
-
+```
 ## How to build & deploy the Go application
 
 # Go Application Deployment
