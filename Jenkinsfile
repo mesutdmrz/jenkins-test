@@ -20,6 +20,27 @@ pipeline {
         DOCKER_PASS = credentials('DOCKER_PASS')
     }
     stages {
+
+        stage('Checkout Parametric Branch') {
+            steps {
+                container('docker') {
+                    script {
+                        withCredentials([string(credentialsId: 'git-token', variable: 'GIT_TOKEN')]) {
+                            checkout([
+                                $class: 'GitSCM',
+                                branches: [[name: "*/${params.TARGET_BRANCH}"]],
+                                doGenerateSubmoduleConfigurations: false,
+                                extensions: [[$class: 'CloneOption', depth: 1, noTags: false, shallow: true, reference: '', timeout: 10]],
+                                userRemoteConfigs: [[
+                                    url: "https://mesutdmrz:${GIT_TOKEN}@github.com/mesutdmrz/jenkins-test.git"
+                                ]]
+                            ])
+                        }
+                    }
+                }
+            }
+        }
+
         stage('Deploy with Makefile') {
             steps {
                 container('docker') {
