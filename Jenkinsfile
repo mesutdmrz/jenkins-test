@@ -32,9 +32,9 @@ pipeline {
                         def envValue = params.TARGET_BRANCH == 'main' ? 'prod' : 'test'
                         echo "Selected ENV: ${envValue}"
                         sh "kubectl get pods"
-                        sh "pwd"
+                        sh "ls"
                         sh 'git config --global --add safe.directory $WORKSPACE'
-                        sh 'cd /app'
+                        sh 'cd app'
                         sh "make deploy ENV=${envValue}"
                         
                         withCredentials([string(credentialsId: 'git-token', variable: 'GIT_TOKEN')]) {
