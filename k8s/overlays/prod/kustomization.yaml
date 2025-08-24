@@ -15,4 +15,4 @@ configMapGenerator:
 images:
 - name: mesut4730/pod-watcher
   newName: mesut4730/pod-watcher
-  newTag: e199c82-2127
+  newTag: af233f7-2131
