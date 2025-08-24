@@ -69,6 +69,6 @@ func main() {
         log.Fatalf("Failed to sync caches")
     }
 
-    log.Println("✅ Pod informer started. Watching Jenkins pods...")
+    log.Println("✅ Test Pod informer started. Watching Jenkins pods...")
     <-stopCh
 }
