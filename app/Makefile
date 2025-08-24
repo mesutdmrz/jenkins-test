@@ -3,7 +3,7 @@ REGISTRY := mesut4730
 IMAGE := $(REGISTRY)/$(APP_NAME)
 TAG := $(shell git rev-parse --short HEAD)-$(shell date +%H%M)
 
-OVERLAY_DIR := /home/civo/jenkins-test/k8s/overlays
+OVERLAY_DIR := k8s/overlays
 
 .PHONY: all docker push update-kustomize deploy clean
 
