@@ -35,7 +35,7 @@ pipeline {
                         sh "ls"
                         sh 'git config --global --add safe.directory $WORKSPACE'
                         sh """
-                        cd /app
+                        cd app
                         ls
                         make deploy ENV=${envValue}
                         """
