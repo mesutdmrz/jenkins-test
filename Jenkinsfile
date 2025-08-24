@@ -31,6 +31,7 @@ pipeline {
                         '''
                         withCredentials([string(credentialsId: 'git-token', variable: 'GIT_TOKEN')]) {
                             sh """
+                            cd ${WORKSPACE} 
                             git config user.name "${GIT_USER}"
                             git config user.email "${GIT_EMAIL}"
                             git fetch origin ${params.TARGET_BRANCH}
