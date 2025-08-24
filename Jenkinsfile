@@ -33,6 +33,7 @@ pipeline {
                         echo "Selected ENV: ${envValue}"
                         sh "kubectl get pods"
                         sh "pwd"
+                        sh 'git config --global --add safe.directory $WORKSPACE'
                         sh "make -f app/Makefile deploy ENV=${envValue}"
                         
                         withCredentials([string(credentialsId: 'git-token', variable: 'GIT_TOKEN')]) {
