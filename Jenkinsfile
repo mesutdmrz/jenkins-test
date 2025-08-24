@@ -20,12 +20,25 @@ pipeline {
         DOCKER_PASS = credentials('DOCKER_PASS')
     }
     stages {
-        stage('Prepare Workspace & Update Branch') {
+        stage('Checkout & Prepare Workspace') {
             steps {
                 container('docker') {
-                    script {
+                    dir("$WORKSPACE") {
+                        // Repo'yu checkout et
+                        checkout([
+                            $class: 'GitSCM',
+                            branches: [[name: "${params.TARGET_BRANCH}"]],
+                            userRemoteConfigs: [[
+                                url: 'https://github.com/mesutdmrz/jenkins-test.git',
+                                credentialsId: 'git-token'
+                            ]]
+                        ])
+                        
+                        // Git config
                         sh 'git config user.name "${GIT_USER}"'
                         sh 'git config user.email "${GIT_EMAIL}"'
+                        
+                        // Workspace temizle ve branch güncelle
                         sh 'git reset --hard'
                         sh 'git clean -fd'
                         sh "git fetch origin ${params.TARGET_BRANCH}"
@@ -37,20 +50,20 @@ pipeline {
         stage('Deploy with Makefile') {
             steps {
                 container('docker') {
-                    script {
+                    dir("$WORKSPACE") {
                         sh '''
                         mkdir -p /tmp/kube
                         echo "$KUBECONFIG_CONTENT" | base64 -d > /tmp/kube/config
                         export KUBECONFIG=/tmp/kube/config
                         '''
                         
-                        // ENV
+                        // Parametreye göre ENV seçimi
                         def envValue = params.TARGET_BRANCH == 'main' ? 'prod' : 'test'
                         echo "Selected ENV: ${envValue}"
                         sh "kubectl get pods"
                         sh "ls"
                         
-                        // Docker login / deploy
+                        // Docker login ve deploy
                         sh """
                         echo "${env.DOCKER_PASS}" | docker login -u "${env.DOCKER_USER}" --password-stdin
                         cd app
