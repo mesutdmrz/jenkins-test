@@ -2,13 +2,6 @@ pipeline {
     agent none
 
     stages {
-        stage('Checkout') {
-            agent any
-            steps {
-                checkout scm
-            }
-        }
-
         stage('DinD Static Pod with Inline Kubeconfig') {
             agent {
                 kubernetes {
