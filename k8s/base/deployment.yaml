@@ -15,4 +15,5 @@ spec:
       serviceAccountName: pod-watcher-sa
       containers:
         - name: pod-watcher
-          args: ["-v"] # jenkins namespace'i izle
+          image: mesut4730/pod-watcher:v1
+          args: ["-v"]

@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pod-watcher-config
+data:
+  config.json: |
+    {
+      "featureEnabled": false,
+      "profile": "prod-xyz789"
+    }

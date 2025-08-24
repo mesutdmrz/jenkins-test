@@ -7,7 +7,6 @@ spec:
     spec:
       containers:
         - name: pod-watcher
-          image: mesut4730/pod-watcher:v2
           imagePullPolicy: Always
           resources:
             requests:
@@ -16,3 +15,17 @@ spec:
             limits:
               cpu: "1"
               memory: "1Gi"
+          volumeMounts:
+            - name: common-config-volume
+              mountPath: /etc/pod-watcher/common
+              readOnly: true
+            - name: profile-config-volume
+              mountPath: /etc/pod-watcher/profile
+              readOnly: true
+      volumes:
+        - name: common-config-volume
+          configMap:
+            name: common-config
+        - name: profile-config-volume
+          configMap:
+            name: pod-watcher-prod-profile-config

@@ -7,3 +7,12 @@ kind: Kustomization
 patches:
 - path: clusterrolebinding-patch.yaml
 - path: deployment-patch.yaml
+
+configMapGenerator:
+- literals:
+  - profile=prod-abc123
+  name: profile-config
+images:
+- name: mesut4730/pod-watcher
+  newName: mesut4730/pod-watcher
+  newTag: 3c108d4
